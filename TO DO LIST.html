@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مهامي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #0e0c1a; --paper: #f5f0e8; --warm: #ede8dd; --stroke: #d4ccb8;
+  --muted: #9a9080; --deep: #2c2640; --gold: #c9a84c; --gold2: #e8c96a;
+  --rose: #c4566a; --sage: #4a7c6f; --shadow: rgba(14,12,26,0.12);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--paper); color: var(--ink);
+  min-height: 100vh; overflow-x: hidden; cursor: default;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03; pointer-events: none; z-index: 9999;
+}
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar {
+  background: var(--ink); color: var(--paper);
+  padding: 48px 32px; display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+}
+.sidebar::after {
+  content: ''; position: absolute; bottom: -60px; left: -60px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.logo-mark {
+  width: 44px; height: 44px; background: var(--gold); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 40px;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+}
+.sidebar h1 { font-size: 2rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1; margin-bottom: 6px; }
+.sidebar h1 span { color: var(--gold); }
+.sidebar .sub { color: rgba(245,240,232,0.4); font-size: 0.82rem; font-weight: 300; margin-bottom: 40px; }
+.date-block { border-top: 1px solid rgba(245,240,232,0.1); padding-top: 20px; margin-bottom: 40px; }
+.date-day { font-size: 3.5rem; font-weight: 900; line-height: 1; color: var(--gold); display: block; }
+.date-rest { font-size: 0.8rem; color: rgba(245,240,232,0.5); font-weight: 300; margin-top: 4px; display: block; }
+.filters-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; color: rgba(245,240,232,0.3); text-transform: uppercase; margin-bottom: 12px; }
+.filters { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.filter-btn {
+  background: none; border: none; color: rgba(245,240,232,0.5);
+  font-family: 'Tajawal', sans-serif; font-size: 0.9rem;
+  padding: 10px 14px; border-radius: 10px; cursor: pointer;
+  text-align: right; display: flex; align-items: center; gap: 10px;
+  transition: all 0.2s; font-weight: 400;
+}
+.filter-btn .f-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0; background: rgba(245,240,232,0.06);
+}
+.filter-btn .f-count { margin-right: auto; font-size: 0.72rem; background: rgba(245,240,232,0.1); padding: 2px 8px; border-radius: 20px; }
+.filter-btn:hover { color: var(--paper); background: rgba(245,240,232,0.06); }
+.filter-btn.active { background: rgba(201,168,76,0.15); color: var(--gold2); font-weight: 600; }
+.filter-btn.active .f-icon { background: rgba(201,168,76,0.2); }
+.filter-btn.active .f-count { background: rgba(201,168,76,0.25); color: var(--gold2); }
+.progress-section {
+  margin-top: auto; padding-top: 24px; border-top: 1px solid rgba(245,240,232,0.1);
+  display: flex; align-items: center; gap: 14px;
+}
+.ring-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: rgba(245,240,232,0.1); stroke-width: 3; }
+.ring-fill { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 138.23; stroke-dashoffset: 138.23; transition: stroke-dashoffset 0.6s ease; }
+.ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: var(--gold); }
+.progress-text .p-label { font-size: 0.75rem; color: rgba(245,240,232,0.4); display: block; font-weight: 300; }
+.progress-text .p-val { font-size: 1rem; font-weight: 700; color: var(--paper); }
+.main { background: var(--paper); padding: 48px 52px; min-height: 100vh; }
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+.section-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+.clear-btn { background: none; border: 1px solid var(--stroke); color: var(--muted); font-family: 'Tajawal', sans-serif; font-size: 0.8rem; padding: 7px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: none; }
+.clear-btn.visible { display: block; }
+.clear-btn:hover { border-color: var(--rose); color: var(--rose); }
+.input-card {
+  background: white; border: 1.5px solid var(--stroke); border-radius: 18px;
+  padding: 6px 6px 6px 18px; display: flex; align-items: center; gap: 10px;
+  margin-bottom: 32px; box-shadow: 0 2px 20px var(--shadow); transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-card:focus-within { border-color: var(--gold); box-shadow: 0 4px 28px rgba(201,168,76,0.18); }
+.input-card input { flex: 1; border: none; outline: none; font-family: 'Tajawal', sans-serif; font-size: 1rem; color: var(--ink); background: transparent; text-align: right; font-weight: 400; }
+.input-card input::placeholder { color: var(--muted); }
+.cat-select { border: none; outline: none; font-family: 'Tajawal', sans-serif; font-size: 0.82rem; color: var(--muted); background: var(--warm); padding: 6px 10px; border-radius: 10px; cursor: pointer; }
+.add-btn { background: var(--ink); border: none; border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gold); font-size: 1.4rem; transition: all 0.2s; flex-shrink: 0; }
+.add-btn:hover { background: var(--deep); transform: scale(1.05); }
+.add-btn:active { transform: scale(0.97); }
+.task-group { margin-bottom: 32px; }
+.group-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--stroke); }
+.group-dot { width: 8px; height: 8px; border-radius: 50%; }
+.group-name { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.group-line { flex: 1; height: 1px; background: var(--stroke); }
+.group-count { font-size: 0.7rem; color: var(--muted); background: var(--warm); padding: 2px 8px; border-radius: 20px; }
+.task-list { display: flex; flex-direction: column; gap: 6px; }
+.task-item {
+  background: white; border: 1.5px solid var(--stroke); border-radius: 14px;
+  padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+  transition: all 0.2s; animation: appear 0.3s ease; position: relative; overflow: hidden;
+}
+@keyframes appear { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
+.task-item::before {
+  content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--cat-color, var(--gold)); border-radius: 0 14px 14px 0;
+  opacity: 0; transition: opacity 0.2s;
+}
+.task-item:hover { border-color: #c4b89a; box-shadow: 0 4px 16px var(--shadow); transform: translateY(-1px); }
+.task-item:hover::before { opacity: 1; }
+.task-item.done { background: var(--warm); border-color: var(--stroke); opacity: 0.6; }
+.task-item.done .task-text { text-decoration: line-through; color: var(--muted); }
+.checkbox { width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--stroke); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: white; }
+.checkbox:hover { border-color: var(--gold); }
+.task-item.done .checkbox { background: var(--sage); border-color: var(--sage); }
+.checkbox-check { width: 5px; height: 9px; border-right: 2px solid white; border-bottom: 2px solid white; transform: rotate(45deg) translateY(-1px); opacity: 0; transition: opacity 0.15s; }
+.task-item.done .checkbox-check { opacity: 1; }
+.task-text { flex: 1; font-size: 0.95rem; line-height: 1.45; cursor: pointer; }
+.task-meta { display: flex; align-items: center; gap: 6px; }
+.task-cat-badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 6px; font-weight: 500; opacity: 0.8; }
+.task-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+.task-item:hover .task-actions { opacity: 1; }
+.action-btn { width: 28px; height: 28px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: var(--warm); color: var(--muted); }
+.action-btn.del:hover { background: rgba(196,86,106,0.12); color: var(--rose); }
+.empty-state { text-align: center; padding: 64px 0; color: var(--muted); }
+.empty-art { font-size: 3.5rem; margin-bottom: 16px; display: block; opacity: 0.4; }
+.empty-state p { font-size: 0.95rem; font-weight: 300; }
+.toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 12px; font-size: 0.88rem; font-weight: 500; z-index: 1000; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+.toast.show { transform: translateX(-50%) translateY(0); }
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; padding: 28px 24px; }
+  .date-block { display: none; }
+  .filters { flex-direction: row; flex-wrap: wrap; }
+  .main { padding: 24px 20px; }
+  .progress-section { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo-mark">✦</div>
+    <h1>مهامي <span>اليوم</span></h1>
+    <p class="sub">نظّم يومك، أنجز أهدافك</p>
+    <div class="date-block">
+      <span class="date-day" id="dayNum"></span>
+      <span class="date-rest" id="dateRest"></span>
+    </div>
+    <div class="filters-label">التصنيفات</div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all',this)">
+        <span class="f-icon">📋</span> الكل <span class="f-count" id="count-all">0</span>
+      </button>
+      <button class="filter-btn" onclick="setFilter('عمل',this)">
+        <span class="f-icon">💼</span> عمل <span class="f-count" id="count-عمل">0</span>
+      </button>
+      <button class="filter-btn" onclick="setFilter('شخصي',this)">
+        <span class="f-icon">🌿</span> شخصي <span class="f-count" id="count-شخصي">0</span>
+      </button>
+      <button class="filter-btn" onclick="setFilter('تسوق',this)">
+        <span class="f-icon">🛍</span> تسوق <span class="f-count" id="count-تسوق">0</span>
+      </button>
+      <button class="filter-btn" onclick="setFilter('صحة',this)">
+        <span class="f-icon">🏃</span> صحة <span class="f-count" id="count-صحة">0</span>
+      </button>
+      <button class="filter-btn" onclick="setFilter('done',this)">
+        <span class="f-icon">✅</span> مكتملة <span class="f-count" id="count-done">0</span>
+      </button>
+    </div>
+    <div class="progress-section">
+      <div class="ring-wrap">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle class="ring-bg" cx="26" cy="26" r="22"/>
+          <circle class="ring-fill" id="ringFill" cx="26" cy="26" r="22"/>
+        </svg>
+        <span class="ring-pct" id="ringPct">0%</span>
+      </div>
+      <div class="progress-text">
+        <span class="p-label">تقدمك اليوم</span>
+        <span class="p-val" id="progressVal">0 من 0 مهمة</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h2 class="section-title" id="sectionTitle">جميع المهام</h2>
+      <button class="clear-btn" id="clearBtn" onclick="clearDone()">🗑 حذف المكتملة</button>
+    </div>
+    <div class="input-card">
+      <button class="add-btn" onclick="addTask()">+</button>
+      <select class="cat-select" id="catSelect">
+        <option value="عمل">💼 عمل</option>
+        <option value="شخصي">🌿 شخصي</option>
+        <option value="تسوق">🛍 تسوق</option>
+        <option value="صحة">🏃 صحة</option>
+      </select>
+      <input type="text" id="taskInput" placeholder="اكتب مهمتك هنا..." />
+    </div>
+    <div id="taskContainer"></div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = {
+  'عمل':  { color: '#4a7c6f', bg: 'rgba(74,124,111,0.1)',   icon: '💼' },
+  'شخصي': { color: '#c9a84c', bg: 'rgba(201,168,76,0.1)',   icon: '🌿' },
+  'تسوق': { color: '#9b6bb5', bg: 'rgba(155,107,181,0.1)',  icon: '🛍' },
+  'صحة':  { color: '#c4566a', bg: 'rgba(196,86,106,0.1)',   icon: '🏃' },
+};
+const TITLES = { all:'جميع المهام', done:'المهام المكتملة', 'عمل':'مهام العمل', 'شخصي':'المهام الشخصية', 'تسوق':'قائمة التسوق', 'صحة':'الصحة واللياقة' };
+let tasks = JSON.parse(localStorage.getItem('todo_v2')||'[]');
+let filter = 'all';
+
+const now = new Date();
+document.getElementById('dayNum').textContent = now.getDate();
+document.getElementById('dateRest').textContent = now.toLocaleDateString('ar-EG',{weekday:'long',month:'long',year:'numeric'});
+
+function save() { localStorage.setItem('todo_v2', JSON.stringify(tasks)); }
+
+function updateStats() {
+  const total = tasks.length, done = tasks.filter(t=>t.done).length;
+  const pct = total > 0 ? Math.round((done/total)*100) : 0;
+  const circ = 2*Math.PI*22;
+  document.getElementById('ringFill').style.strokeDashoffset = circ - (pct/100)*circ;
+  document.getElementById('ringPct').textContent = pct+'%';
+  document.getElementById('progressVal').textContent = done+' من '+total+' مهمة';
+  document.getElementById('count-all').textContent = tasks.filter(t=>!t.done).length;
+  document.getElementById('count-done').textContent = done;
+  ['عمل','شخصي','تسوق','صحة'].forEach(c => {
+    const el = document.getElementById('count-'+c);
+    if (el) el.textContent = tasks.filter(t=>t.cat===c&&!t.done).length;
+  });
+  document.getElementById('clearBtn').classList.toggle('visible', done > 0);
+}
+
+function render() {
+  document.getElementById('sectionTitle').textContent = TITLES[filter]||filter;
+  let filtered;
+  if (filter==='all') filtered = tasks.filter(t=>!t.done);
+  else if (filter==='done') filtered = tasks.filter(t=>t.done);
+  else filtered = tasks.filter(t=>t.cat===filter&&!t.done);
+  const container = document.getElementById('taskContainer');
+  if (filtered.length===0) {
+    const msgs = {all:'لا توجد مهام معلقة، أحسنت! 🎉', done:'لم تكتمل أي مهمة بعد'};
+    container.innerHTML = `<div class="empty-state"><span class="empty-art">◎</span><p>${msgs[filter]||'لا توجد مهام في هذا التصنيف'}</p></div>`;
+  } else if (filter==='all'||filter==='done') {
+    const groups = {};
+    filtered.forEach(t=>{ const k=t.cat||'عمل'; if(!groups[k]) groups[k]=[]; groups[k].push(t); });
+    container.innerHTML = Object.entries(groups).map(([cat,items])=>`
+      <div class="task-group">
+        <div class="group-header">
+          <span class="group-dot" style="background:${CATS[cat]?.color||'#999'}"></span>
+          <span class="group-name">${cat}</span>
+          <span class="group-line"></span>
+          <span class="group-count">${items.length}</span>
+        </div>
+        <div class="task-list">${items.map(renderTask).join('')}</div>
+      </div>`).join('');
+  } else {
+    container.innerHTML = `<div class="task-list">${filtered.map(renderTask).join('')}</div>`;
+  }
+  updateStats();
+}
+
+function renderTask(t) {
+  const cat = CATS[t.cat]||CATS['عمل'];
+  return `<div class="task-item ${t.done?'done':''}" style="--cat-color:${cat.color}">
+    <div class="checkbox" onclick="toggle('${t.id}')"><div class="checkbox-check"></div></div>
+    <span class="task-text" onclick="toggle('${t.id}')">${esc(t.text)}</span>
+    <div class="task-meta">
+      <span class="task-cat-badge" style="background:${cat.bg};color:${cat.color}">${cat.icon} ${t.cat}</span>
+      <div class="task-actions">
+        <button class="action-btn del" onclick="deleteTask('${t.id}')">✕</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function addTask() {
+  const input = document.getElementById('taskInput');
+  const cat = document.getElementById('catSelect').value;
+  const text = input.value.trim();
+  if (!text) { input.focus(); return; }
+  tasks.unshift({id:Date.now().toString(),text,cat,done:false});
+  input.value=''; save(); render();
+  showToast('✦ تمت إضافة المهمة'); input.focus();
+}
+function toggle(id) {
+  const t=tasks.find(t=>t.id===id); if(!t) return;
+  t.done=!t.done; save(); render();
+  if(t.done) showToast('✓ أحسنت، مهمة مكتملة!');
+}
+function deleteTask(id) { tasks=tasks.filter(t=>t.id!==id); save(); render(); showToast('تم حذف المهمة'); }
+function clearDone() { const n=tasks.filter(t=>t.done).length; tasks=tasks.filter(t=>!t.done); save(); render(); showToast('تم حذف '+n+' مهمة مكتملة'); }
+function setFilter(f,btn) { filter=f; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(); }
+
+let toastTimer;
+function showToast(msg) {
+  const el=document.getElementById('toast'); el.textContent=msg;
+  el.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2400);
+}
+document.getElementById('taskInput').addEventListener('keydown',e=>{ if(e.key==='Enter') addTask(); });
+render();
+</script>
+</body>
+</html>
